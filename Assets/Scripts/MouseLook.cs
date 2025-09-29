@@ -2,15 +2,18 @@ using UnityEngine;
 
 public class MouseLook : MonoBehaviour
 {
-    // Start is called once before the first execution of Update after the MonoBehaviour is created
-    void Start()
+    [SerializeField] float sensivityX = 1f;
+    [SerializeField] float sensivityY = 1f;
+    float mouseX, mouseY;
+
+    private void Update()
     {
-        
+        transform.Rotate(Vector3.up, mouseX * Time.deltaTime);
     }
 
-    // Update is called once per frame
-    void Update()
+    public void ReceiveInput(Vector2 mouseInput)
     {
-        
+        mouseX = mouseInput.x * sensivityX;
+        mouseY = mouseInput.y * sensivityY;
     }
 }
