@@ -2,63 +2,36 @@ using UnityEngine;
 
 public class ItemPickup : MonoBehaviour
 {
-    [SerializeField] private float pickupRange = 3f;
-    [SerializeField] private Transform handPosition; // dónde se sujeta el arma al recogerla
-    private GameObject objectToPickup;
-    private GameObject currentWeapon;
+    public GameObject nearItem;
+    public GameObject itemPrefab;
+    public Transform itemParent;
 
-    private void Update()
-    {
-        DetectItemInFront();
-    }
 
-    private void DetectItemInFront()
+    public void PickUpItem()
     {
-        Ray ray = new Ray(Camera.main.transform.position, Camera.main.transform.forward);
-        if (Physics.Raycast(ray, out RaycastHit hit, pickupRange))
+        if(nearItem != null)
         {
-            if (hit.collider.CompareTag("Weapon"))
-            {
-                objectToPickup = hit.collider.gameObject;
-                // Aquí podrías mostrar un UI tipo “Presiona F para recoger”
-            }
-            else
-            {
-                objectToPickup = null;
-            }
-        }
-        else
-        {
-            objectToPickup = null;
+            Destroy(nearItem);
+            GameObject instatiatedItem = Instantiate(itemPrefab, itemParent);
+
+            instatiatedItem.transform.SetParent(itemParent);
         }
     }
 
-    public void OnInteractPressed()
+    private void OnTriggerEnter(Collider other)
     {
-        if (objectToPickup != null)
+        if(other.gameObject.layer == LayerMask.NameToLayer("Item"))
         {
-            PickupWeapon(objectToPickup);
+            nearItem = other.gameObject;
         }
     }
 
-    private void PickupWeapon(GameObject weapon)
+    private void OnTriggerExit(Collider other)
     {
-        if (currentWeapon != null)
+        if(other.gameObject.layer == LayerMask.NameToLayer("Item"))
         {
-            Destroy(currentWeapon); // o suéltala, según prefieras
+            nearItem = null;
         }
-
-        currentWeapon = weapon;
-        weapon.transform.SetParent(handPosition);
-        weapon.transform.localPosition = Vector3.zero;
-        weapon.transform.localRotation = Quaternion.identity;
-
-        // Desactivar físicas
-        if (weapon.TryGetComponent<Rigidbody>(out Rigidbody rb))
-        {
-            rb.isKinematic = true;
-        }
-
-        weapon.GetComponent<Collider>().enabled = false;
     }
+
 }
