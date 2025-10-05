@@ -14,6 +14,8 @@ public class InputManager : MonoBehaviour
     [SerializeField] private Vector2 horizontalInput;
     Vector2 mouseInput; //To store the input from the mouse
 
+
+
     private void Awake()
     {
         controls = new PlayerControls();
@@ -31,7 +33,7 @@ public class InputManager : MonoBehaviour
     
     private void Update() {
         movement.ReceiveInput(horizontalInput);
-        movement.ReceiveInput(mouseInput); //pass "mouseInput" to "ReceiveInput" method on "mouseLook" script
+        mouseLook.ReceiveInput(mouseInput); //pass "mouseInput" to "ReceiveInput" method on "mouseLook" script
     }
     
     private void OnEnable()
